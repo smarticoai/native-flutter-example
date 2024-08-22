@@ -10,7 +10,7 @@ import 'package:uuid/uuid.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 var uuid = const Uuid();
-var labelName = "";
+
 var labelKey = "";
 var brandKey = "";
 var trackerVersion = "1.3.197";
@@ -342,7 +342,6 @@ class WebSocketDemoState extends State<WebSocketDemo> {
 
     final payload = {
       "cid": 3,
-      "label_name": labelName,
       "label_key": labelKey,
       "brand_key": brandKey,
       "simulation_mode": false,
