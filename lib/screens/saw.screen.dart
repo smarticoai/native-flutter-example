@@ -36,8 +36,6 @@ class SawWebViewScreenState extends State<Saw> {
   void dispose() {
     javaScriptChannelBridge.removeSubscriber(
         JavaScriptChannelCall.closeMe, handleCloseCall);
-    javaScriptChannelBridge.removeSubscriber(
-        JavaScriptChannelCall.pageReady, sendAcknowledge);
 
     super.dispose();
   }
@@ -51,7 +49,7 @@ class SawWebViewScreenState extends State<Saw> {
     }
 
     String sawUrl =
-        "${widget.url}&saw_template_id=${widget.templateId}&pending_message_id=${widget.pendingMessageId}&dp=dp:gf_saw&standalone=true&id=${widget.templateId}";
+        "${widget.url}&saw_template_id=${widget.templateId}&message_id=${widget.pendingMessageId}&dp=dp:gf_saw&standalone=true&id=${widget.templateId}";
 
     log("popup url -> $sawUrl");
 
@@ -72,8 +70,6 @@ class SawWebViewScreenState extends State<Saw> {
 
     javaScriptChannelBridge.registerSubscriber(
         JavaScriptChannelCall.closeMe, handleCloseCall);
-    javaScriptChannelBridge.registerSubscriber(
-        JavaScriptChannelCall.pageReady, sendAcknowledge);
 
     loaded = true;
   }
@@ -86,15 +82,6 @@ class SawWebViewScreenState extends State<Saw> {
     widget.closeSaw();
 
     isClosed = true;
-  }
-
-  Future<void> sendAcknowledge(JavaScriptMessage javaScriptMessage) async {
-    var payload = await AcknowledgeSpinPushPayload(
-      templateId: widget.templateId,
-      pendingMessageId: widget.pendingMessageId,
-    ).toJson();
-
-    webSocketManager.send(payload);
   }
 
   @override
