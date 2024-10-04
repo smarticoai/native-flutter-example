@@ -129,12 +129,12 @@ class HomeState extends State<Home> {
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: openGamification,
+                onPressed: !(isLoggedIn ?? false) ? null : openGamification,
                 child: const Text('Open Gamification'),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: openSaw,
+                onPressed: !(isLoggedIn ?? false) ? null : openSaw,
                 child: const Text('Open SAW'),
               ),
             ],
