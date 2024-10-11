@@ -212,3 +212,63 @@ class ClientEngagementResponse {
     };
   }
 }
+
+enum PushNotificationPlatforms {
+  ios(6),
+  android(7);
+
+  final int id;
+
+  const PushNotificationPlatforms(this.id);
+}
+
+class RegisterPushNotificationTokenPayload {
+  final int cid = 1003;
+  final String token;
+
+  RegisterPushNotificationTokenPayload({
+    required this.token,
+  });
+
+  Future<String> toJson() async {
+    return jsonEncode({
+      "cid": cid,
+      "token": token,
+      "platform": PushNotificationPlatforms.android.id,
+      "pushNotificationUserStatus": 0
+    });
+  }
+}
+
+class PushImpressionPayload {
+  final String userExtId;
+  final String engagementUid;
+  final int messageId;
+  final int activityType;
+  final String action;
+  final String dp;
+
+  PushImpressionPayload({
+    required this.userExtId,
+    required this.engagementUid,
+    required this.messageId,
+    required this.activityType,
+    required this.action,
+    required this.dp,
+  });
+
+  String toJson() {
+    return jsonEncode({
+      "uuid": cryptoUtils.generateUuidV4(),
+      "ts": DateTime.now().millisecondsSinceEpoch,
+      "event_type": 'engagement_impression',
+      "user_ext_id": userExtId,
+      "payload": {
+        "engagement_uid": engagementUid,
+        "message_id": messageId,
+        "activity_type": activityType
+      },
+      "dp": dp
+    });
+  }
+}

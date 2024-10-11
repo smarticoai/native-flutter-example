@@ -33,7 +33,7 @@ class WebSocketManager {
       WebSocketResponse smarticoResponse =
           WebSocketResponse.fromJson(smarticoResponseMap);
 
-      if (smarticoResponse.uuid == lastMessageId) {
+      if (smarticoResponse.uuid == lastMessageId && smarticoResponse.cid != 1) {
         return;
       }
 

@@ -1,8 +1,10 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/managers/deep-links/constants.dart';
 import 'package:flutter_application_1/managers/deep-links/deep_links.manager.dart';
+import 'package:flutter_application_1/managers/notification/notification.manager.dart';
 import 'package:flutter_application_1/managers/persistant-storage/constants.dart';
 import 'package:flutter_application_1/managers/persistant-storage/persistant-storage.manager.dart';
 import 'package:flutter_application_1/managers/web-socket/constants.dart';
@@ -11,6 +13,8 @@ import 'package:flutter_application_1/managers/web-socket/handlers.dart';
 import 'package:flutter_application_1/managers/web-socket/web-socket.manager.dart';
 import 'package:flutter_application_1/router/router.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 final PersistantStorage persistantStorage = PersistantStorage();
 final DeepLinksManager deepLinkManager = DeepLinksManager();
@@ -27,6 +31,25 @@ Future main() async {
   await dotenv.load(fileName: ".env");
 
   await persistantStorage.initInstance();
+
+  if (Platform.isAndroid) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_API_KEY'] ?? 'api_key',
+        appId: dotenv.env['FIREBASE_APP_ID'] ?? 'app_id',
+        messagingSenderId: dotenv.env['FIREBASE_SENDER_ID'] ?? 'sender_id',
+        projectId: dotenv.env['FIREBASE_PROJECT_ID'] ?? 'project_id',
+        storageBucket:
+            dotenv.env['FIREBASE_STORAGE_BACKET'] ?? 'storage_backet',
+      ),
+    );
+
+    await FirebaseMessaging.instance.getInitialMessage();
+    await FirebaseMessaging.instance.requestPermission();
+
+    WidgetsFlutterBinding.ensureInitialized();
+    NotificationManager.initNotification();
+  }
 
   webSocketManager.registerSubscriber(
       ServerCall.identifyUserResponse, handleIdentifyUserRes);
